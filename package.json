@@ -1,0 +1,30 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "RSS agregator for Hexlet project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zhostt/frontend-project-11.git"
+  },
+  "keywords": [
+    "rss"
+  ],
+  "author": "Zhostt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zhostt/frontend-project-11/issues"
+  },
+  "homepage": "https://github.com/Zhostt/frontend-project-11#readme",
+  "devDependencies": {
+    "eslint": "^8.40.0"
+  },
+  "dependencies": {
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
