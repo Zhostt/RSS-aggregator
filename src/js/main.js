@@ -30,11 +30,13 @@ const app = () => {
   const watchedState = renderStateOnWatch(state, elements);
 
   elements.form.addEventListener = ('submit', (e) => {
+    alert('SUBMITTED)');
     e.preventDefault();
     const formData = new FormData();
     const link = formData.get('url');
     schema.validate(link)
       .then((validLink) => {
+        alert('OK');
         watchedState.urlForm.listFeed.push(validLink);
         watchedState.urlForm.valid = true;
         elements.formInput.reset();
@@ -42,6 +44,7 @@ const app = () => {
         watchedState.urlForm.errors = [];
       })
       .catch((err) => {
+        alert('ERROR');
         watchedState.urlForm.valid = false;
         watchedState.urlForm.errors.push(err);
       });
