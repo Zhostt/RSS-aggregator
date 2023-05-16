@@ -6,10 +6,12 @@
     <title>RSS aggregator for Hexlet</title>
   </head>
   <body>
-    <form class="container py-4 px-3 mx-auto">
-      <label for="RSS_link" class="" placeholder="Ссылка RSS"></label>
-      <input type="RSS_link" id="'RSS_link" name="RSS_link">
-      <input type="submit" value='Добавить'>
+    <div class="container py-4 px-3 mx-auto">
+      <form id="RSS_input_form">
+        <input autofocus required id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
+        <label for="url_input" >Ссылка RSS</label>
+        <input type="submit" class='h-100 btn btn-lg btn-primary px-sm-5', value='Добавить'>
+      </form>
     </div>
   </body>
 </html>
