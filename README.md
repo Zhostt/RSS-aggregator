@@ -9,4 +9,4 @@ npm run build
 
 to bundle application
 
-Link to the site on Vercel: https://frontend-project-11-mu.vercel.app/
+Link to the site on Vercel: https://frontend-project-11-6oxj.vercel.app/

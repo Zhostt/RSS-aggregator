@@ -6,7 +6,7 @@ const renderStateOnWatch = (state, elements) => {
     if (path === 'valid' && value === true) {
       // тут будет отрисовка фида
     } else if (path === 'valid' && value === false) {
-      elements.formInput.classList.add('invalid');
+      elements.formInput.classList.add('is-invalid');
     }
   });
   return watchedFeedForm;
