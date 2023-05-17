@@ -17,35 +17,40 @@ const app = () => {
     formInput: document.querySelector('#url_input'),
     formSubmit: document.querySelector('#submit'),
   };
-  // yup schema to validate if it is url
-  const schema = yup.object().shape({
-    url: yup.string().url('enter valid URL').required('enter valid URL').notOneOf(state.urlForm.listFeed),
-  });
+  // make state watched by function from module view.js
   const watchedState = renderStateOnWatch(state, elements);
 
+  // yup schema to validate if it is url. Not using obj.shape cause we validate only 1 string.
+  // let because we change schema after each addition to listFeed
+  let schema = yup.string('URL is a string')
+    .url('enter valid URL')
+    .required('URL is required to submit')
+    .notOneOf(state.urlForm.listFeed, 'URL already added to feed');
+
+  // handle submits based on validation by schema
   const submitHandler = (e) => {
     e.preventDefault();
-    alert(e.target.textContent);
-    const formData = new FormData();
-    const link = formData.get('url');
+    const formData = new FormData(e.target); // never forget about e.target
+    const link = formData.get('url'); // get url string
     schema.validate(link)
       .then((validLink) => {
-        alert('OK');
-        watchedState.urlForm.listFeed.push(validLink);
-        watchedState.urlForm.valid = true;
-        elements.formInput.reset();
-        elements.formInput.focus();
-        watchedState.urlForm.errors = [];
+        watchedState.urlForm.listFeed.push(validLink); // add new feed to listFeed
+        watchedState.urlForm.valid = true; // switch valid state to true
+        elements.form.reset();
+        elements.form.focus();
+        schema = yup.string('URL is a string') // renewing schema bacause it cant follow the state changes itself (i mean notOneOf cant see changes in array)
+          .url('enter valid URL')
+          .required('URL is required to submit')
+          .notOneOf(state.urlForm.listFeed, 'URL already added to feed');
       })
       .catch((err) => {
-        alert('ERROR');
-        watchedState.urlForm.valid = false;
-        watchedState.urlForm.errors.push(err);
+        watchedState.urlForm.errors = []; // clear errors array
+        watchedState.urlForm.errors.push(err); // add our new errors
+        watchedState.urlForm.valid = false; // switch state validation to false
       });
   };
 
-  alert('INITIALIZED5');
-  elements.formSubmit.addEventListener = ('click', submitHandler);
+  elements.form.addEventListener('submit', submitHandler);
 };
 
 export default app;

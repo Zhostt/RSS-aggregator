@@ -7,9 +7,19 @@
   </head>
   <body>
     <div class="container py-4 px-3 mx-auto">
-      <form id="RSS_input_form">
-        <input autofocus required id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
-        <input type="submit" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
+      <form id="RSS_input_form" action>
+        <div class="row">
+          <div class="col">
+            <div class="form-floating">
+              <input required autofocus id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
+              <label for="url_input">Ссылка RSS</label>
+            </div>
+          </div>
+          <div class="col-auto">
+            <input type="submit" aria-label="add" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
+          </div>
+        </div>
+        
       </form>
     </div>
   </body>
