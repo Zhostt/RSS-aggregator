@@ -1,3 +1,4 @@
+/* eslint-disable */
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -6,7 +7,7 @@ module.exports = {
   mode: 'development',
   entry: './src/js/index.js',
   output: {
-    filename: 'index.js',
+    filename: 'index_bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
