@@ -1,7 +1,18 @@
 // yup for validation
 import * as yup from 'yup';
 // render from our view.js file
+import i18n from 'i18next';
 import renderStateOnWatch from './view.js';
+// localization lib
+// localization files from i18next
+import resources from '../locales/resources.js';
+
+const i18nextInstance = i18n.createInstance();
+i18nextInstance.init({
+  lng: 'ru', // Текущий язык
+  debug: false,
+  resources, // from locales
+});
 
 const app = () => {
   const state = {

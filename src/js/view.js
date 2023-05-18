@@ -12,7 +12,7 @@ const renderStateOnWatch = (state, elements) => {
     } else if ((path === 'urlForm.valid' && value === false) || (path === 'urlForm.errors' && value !== [])) {
       elements.formInput.classList.add('is-invalid'); // making input invalid
       state.urlForm.errors.forEach((err) => { // create p elem for each error and add error text
-        const errorP = document.createElement('div');
+        const errorP = document.createElement('p');
         errorP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-danger');
         errorP.textContent = err;
         elements.form.appendChild(errorP);

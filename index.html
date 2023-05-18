@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ru">
   <head>
@@ -6,21 +7,29 @@
     <title>RSS aggregator for Hexlet</title>
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <form id="RSS_input_form" action>
-        <div class="row">
-          <div class="col">
-            <div class="form-floating">
-              <input required autofocus id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
-              <label for="url_input">Ссылка RSS</label>
-            </div>
-          </div>
-          <div class="col-auto">
-            <input type="submit" aria-label="add" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
-          </div>
+    <main>
+      <section class="container-fluid bg-dark p-5">
+        <div class="row"><div class="col-md-10 col-lg-8 mx-auto text-white">
+        <h1 class="display-3 mb-0">RSS агрегатор</h1>
+        <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
         </div>
-        
+      </div>
+      <div class="container py-4 px-3 mx-auto">
+        <form id="RSS_input_form" action>
+          <div class="row">
+            <div class="col">
+              <div class="form-floating">
+                <input required autofocus id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
+                <label for="url_input">Ссылка RSS</label>
+              </div>
+            </div>
+            <div class="col-auto">
+              <input type="submit" aria-label="add" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
+            </div>
+          </div> 
       </form>
     </div>
+  </section>
+  </main>
   </body>
 </html>
