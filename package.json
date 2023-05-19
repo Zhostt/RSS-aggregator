@@ -45,6 +45,7 @@
     "on-change": "^4.0.2",
     "path": "^0.12.7",
     "workbox-webpack-plugin": "^6.5.4",
+    "xmldom": "^0.6.0",
     "yup": "^1.1.1"
   }
 }

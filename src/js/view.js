@@ -2,10 +2,11 @@ import onChange from 'on-change';
 
 const renderStateOnWatch = (state, elements) => {
   const watchedFeedForm = onChange(state, (path, value, previousValue) => {
-    document.querySelectorAll('.text-danger').forEach((el) => el.remove()); // remove prev error messages
+    document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
     // if submit is valid
     if (path === 'urlForm.valid' && value === true) {
       elements.formInput.classList.remove('is-invalid');
+
       // тут будет отрисовка фида
 
       // else if submit is invalid (newly invalid or was invalid and invalid again)
