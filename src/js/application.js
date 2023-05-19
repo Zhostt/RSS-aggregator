@@ -1,20 +1,14 @@
 // yup for validation
 import * as yup from 'yup';
-// render from our view.js file
-import i18n from 'i18next';
-import renderStateOnWatch from './view.js';
 // localization lib
+import i18n from 'i18next';
+// render from our view.js file
+import renderStateOnWatch from './view.js';
 // localization files from i18next
 import resources from '../locales/resources.js';
 
-const i18nextInstance = i18n.createInstance();
-i18nextInstance.init({
-  lng: 'ru', // Текущий язык
-  debug: false,
-  resources, // from locales
-});
-
-const app = () => {
+const app = (i18nextInstance) => {
+  // state
   const state = {
     urlForm: {
       listFeed: [],
@@ -23,6 +17,7 @@ const app = () => {
     },
   };
 
+  // elements list by selectors
   const elements = {
     form: document.querySelector('#RSS_input_form'),
     formInput: document.querySelector('#url_input'),
@@ -31,12 +26,23 @@ const app = () => {
   // make state watched by function from module view.js
   const watchedState = renderStateOnWatch(state, elements);
 
+  // set default error messages for different validations, based on our i18next translations
+  yup.setLocale({
+    mixed: {
+      required: i18nextInstance.t('validation.requiredErr'),
+      notOneOf: i18nextInstance.t('validation.notOneOfErr'),
+    },
+    string: {
+      url: i18nextInstance.t('validation.urlErr'),
+    },
+  });
+
   // yup schema to validate if it is url. Not using obj.shape cause we validate only 1 string.
   // let because we change schema after each addition to listFeed
-  let schema = yup.string('URL is a string')
-    .url('enter valid URL')
-    .required('URL is required to submit')
-    .notOneOf(state.urlForm.listFeed, 'URL already added to feed');
+  let schema = yup.string()
+    .url()
+    .required()
+    .notOneOf(state.urlForm.listFeed);
 
   // handle submits based on validation by schema
   const submitHandler = (e) => {
@@ -48,20 +54,38 @@ const app = () => {
         watchedState.urlForm.listFeed.push(validLink); // add new feed to listFeed
         watchedState.urlForm.valid = true; // switch valid state to true
         elements.form.reset();
-        elements.form.focus();
-        schema = yup.string('URL is a string') // renewing schema bacause it cant follow the state changes itself (i mean notOneOf cant see changes in array)
-          .url('enter valid URL')
-          .required('URL is required to submit')
-          .notOneOf(state.urlForm.listFeed, 'URL already added to feed');
+        elements.formInput.focus();
+        // renewing schema bacause notOneOf cant see changes in targeted array
+        schema = yup.string()
+          .url()
+          .required()
+          .notOneOf(state.urlForm.listFeed);
       })
       .catch((err) => {
         watchedState.urlForm.errors = []; // clear errors array
-        watchedState.urlForm.errors.push(err); // add our new errors
+        watchedState.urlForm.errors.push(err.message); // add our new errors
+        // .message give text only without "validation error:" first part of the string
         watchedState.urlForm.valid = false; // switch state validation to false
+        elements.formInput.focus();
       });
   };
 
   elements.form.addEventListener('submit', submitHandler);
 };
 
-export default app;
+const runApp = () => { // to initialize instance of i18n without async/await we should envelop it
+  const i18nextInstance = i18n.createInstance();
+  i18nextInstance.init({
+    lng: 'ru', // Current language
+    debug: false,
+    resources, // from locales
+  })
+    .then(() => {
+      app(i18nextInstance);
+    })
+    .catch((e) => {
+      throw new Error('i18next initialization Error');
+    });
+};
+
+export default runApp;

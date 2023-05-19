@@ -1,7 +1,9 @@
 export default {
   translation: {
-    urlErr: 'Enter URL',
-    requriedErr: 'Field is required',
-    notOneOfErr: 'URL already added',
+    validation: {
+      urlErr: 'Enter URL',
+      requiredErr: 'Field is required',
+      notOneOfErr: 'URL already added',
+    },
   },
 };

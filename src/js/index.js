@@ -3,6 +3,6 @@ import '../scss/styles.scss';
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
 // our app
-import app from './application.js';
+import runApp from './application.js';
 
-app();
+runApp();
