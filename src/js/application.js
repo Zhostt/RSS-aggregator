@@ -54,7 +54,7 @@ const app = (i18nextInstance) => {
     const link = formData.get('url'); // get url string
     schema.validate(link)
       .then((validLink) => {
-        const getValid = getFeed(link, watchedState, i18nextInstance); // get the feed,
+        const getValid = getFeed(validLink, watchedState, i18nextInstance); // get the feed,
         if (getValid !== false) { // checking if url is valid rss
           watchedState.urlForm.feedList.push(validLink); // add new feed to feedList
           watchedState.urlForm.valid = true; // switch valid state to true

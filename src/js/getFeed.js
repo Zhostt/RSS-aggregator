@@ -1,63 +1,67 @@
 import axios from 'axios';
 
-// get from url from state (onWatch state.urlForm.feedList),so getter should recieve state and make onWatch
-// It gets xml, next is Parser. Returns array of objects with description, link, title (title should be a text of link), feedURL as ID
+// get from url from state (onWatch state.urlForm.feedList)
+// It gets xml, next is Parser. Returns array of objects with ...
+// ...description, link, title (title should be a text of link), feedURL as ID
 // Then parsed staff added to state.feed
 // viewer gets this and cnahge the view
 
-// summary func
 const getFeed = (feedLink, state, i18nextInstance) => {
-  const getLastUrlAllOrig = (link) => { // https://github.com/Hexlet/hexlet-allorigins is needed
-    const allOriginPath = 'https://allorigins.hexlet.app/get?disableCache=true&url='; // to prevent same origin policy err
-    const url = new URL(link, allOriginPath); // path first, url base second arg
-    return url;
+  // form correct url to avoid same policy origin problem
+  const getLastUrlAllOrig = (link) => {
+    // https://github.com/Hexlet/hexlet-allorigins is needed
+    const allOriginPath = 'https://allorigins.hexlet.app/get?disableCache=true&url=';
+    // const url = new URL(link, allOriginPath); // Same origins still applies somehow
+    const urlStr = allOriginPath + link; // but it works with str
+    return urlStr;
   };
 
+  // get responce from url
   const getRss = (url) => axios.get(url); // return promise, content is XML file (if rss is rss)
 
-  const validateRSS = (rss) => {
-    rss.then((responce) => {
-    // check if link contains RSS
-      if (!responce.headers['content-type'].includes('application/rss+xml') || !responce.headers['content-type'].includes('application/xml')) {
+  // validate and parse RSS
+  const parseRSS = (rssPromise) => rssPromise
+    .then((responce) => { // fun should return promise
+    // cause we work with promises since getRss till the end
+    // check if link contains RSS tag
+      if (!responce.data.contents.includes('rss version')) {
       // if not - push new error to state errors and stop function
         state.urlForm.valid = false;
         state.urlForm.errors.push(i18nextInstance.t('validation.notRssErr'));
         return false;
       }
-      return true;
+      // if its rss - lets parse
+      const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
+      const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
+      console.log(DOMElement);
+      const itemElArr = DOMElement.querySelectorAll('item'); // tags <item> will contain what we need (thats RSS structure)
+      // from every item in rss we need:
+      // description, link, title (title should be a text of link), feedURL as ID
+      const feedArr = []; // array that will be pushed to state. Not direct push to make this clean
+      itemElArr.forEach((item) => { // for each item
+        const feedObj = { // we form according feed item obj that will go to state
+          title: item.querySelector('title').textContent,
+          description: item.querySelector('description').textContent,
+          link: item.querySelector('link').textContent,
+          feedURL: feedLink, // original feed link (not that all-origins stugg)
+        };
+        feedArr.push(feedObj);
+      });
+      return feedArr;
     });
-  };
-
-  const parseRSS = (rss, url) => {
-    const parser = new DOMParser();
-    const DOMElement = parser.parseFromString(rss, 'text/xml'); // will return DOM element, tags <item> will contain what we need
-    const itemElArr = DOMElement.querySelectorAll('item');
-    const feedArr = [];
-    // from every item - form feed obj with
-    // description, link, title (title should be a text of link), feedURL as ID
-    itemElArr.forEach((el) => {
-      const feedObj = {
-        title: el.title,
-        description: el.description,
-        link: el.link,
-        RSS: url,
-      };
-      feedArr.push(feedObj);
-    });
-    return feedArr;
-  };
 
   // and start all that
   const url = getLastUrlAllOrig(feedLink);
   const rssPromise = getRss(url);
-  const rssValid = validateRSS(rssPromise, i18nextInstance);
   // stop if validation failed
-  if (rssValid === false) {
-    return false;
-  }
-  const feedArr = parseRSS(rssPromise, url);
-  console.log(feedArr);
-  state.feed.push(...feedArr);
+  parseRSS(rssPromise) // parseRSS return promise
+    .then((feedArr) => {
+      if (feedArr !== false) {
+        state.feed.push(feedArr);
+        return feedArr;
+      }
+      return false;
+    }); // and we push returned arr to state
 };
 
 export default getFeed;
