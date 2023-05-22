@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-// get from url from state (onWatch state.urlForm.feedList)
-// It gets xml, next is Parser. Returns array of objects with ...
-// ...description, link, title (title should be a text of link), feedURL as ID
-// Then parsed staff added to state.feed
+// get from url. It gets xml
+// Parser. Returns array of objects with ...
+// ...description, link, title (title should be a text of link), ID
+// Then parsed stuff added to state.feed
 // viewer gets this and cnahge the view
 
-const getFeed = (feedLink, state, i18nextInstance) => {
+const getFeed = (feedLink, i18nextInstance) => {
   // form correct url to avoid same policy origin problem
   const getLastUrlAllOrig = (link) => {
     // https://github.com/Hexlet/hexlet-allorigins is needed
@@ -24,7 +24,7 @@ const getFeed = (feedLink, state, i18nextInstance) => {
     .then((responce) => { // func should return promise
     // ^ cause we work with promises since getRss till the end
     // check if link contains RSS tag
-      if (!responce.data.contents.includes('rss version')) {
+      if (!responce.data.contents.includes('<rss')) {
       // if not - push new error to state errors and stop function
         throw new Error(i18nextInstance.t('validation.notRssErr'));
       }
@@ -32,20 +32,31 @@ const getFeed = (feedLink, state, i18nextInstance) => {
       const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
       const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
       console.log(DOMElement);
+      // generate ID by timestamp
+      const id = Date.now().toString();
+      // getting feed data
+      const feed = {
+        id,
+        title: DOMElement.querySelector('title').textContent,
+        description: DOMElement.querySelector('description').textContent,
+        URL: feedLink,
+      };
+      // getting posts data
       const itemElArr = DOMElement.querySelectorAll('item'); // tags <item> will contain what we need (thats RSS structure)
       // from every item in rss we need:
-      // description, link, title (title should be a text of link), feedURL as ID
-      const feedArr = []; // array that will be pushed to state. Not direct push to make this clean
+      // description, link, title (title should be a text of link), ID for feed
+      const postsArr = []; // array that will be pushed to state. Not direct push to make this clean
       itemElArr.forEach((item) => { // for each item
         const feedObj = { // we form according feed item obj that will go to state
           title: item.querySelector('title').textContent,
           description: item.querySelector('description').textContent,
           link: item.querySelector('link').textContent,
-          feedURL: feedLink, // original feed link (not that all-origins stugg)
+          feedId: id,
         };
-        feedArr.push(feedObj);
+        postsArr.push(feedObj);
       });
-      return feedArr;
+      const channelFeedObj = { feed, postsArr };
+      return channelFeedObj;
     });
 
   // and start all that

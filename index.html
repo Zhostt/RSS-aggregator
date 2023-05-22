@@ -13,22 +13,32 @@
           <div class="col-md-10 col-lg-8 mx-auto text-white">
             <h1 class="display-3 mb-0">RSS агрегатор</h1>
             <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+            <form id="RSS_input_form" action>
+              <div class="row">
+                <div class="col">
+                  <div class="form-floating">
+                    <input autofocus id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
+                    <label for="url_input">Ссылка RSS</label>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <input type="submit" aria-label="add" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
+                </div>
+              </div> 
+            </form>
+            <p class="mt-2 mb-0 text-white">Пример: https://ru.hexlet.io/lessons.rss</p>
+            </div>
           </div>
         </div>
-        <div class="container py-4 px-3 mx-auto">
-          <form id="RSS_input_form" action>
-            <div class="row">
-              <div class="col">
-                <div class="form-floating">
-                  <input autofocus id="url_input" class="form-control w-100" name="url" placeholder="Ссылка RSS">
-                  <label for="url_input">Ссылка RSS</label>
-                </div>
-              </div>
-              <div class="col-auto">
-                <input type="submit" aria-label="add" id='submit' class='h-100 btn btn-lg btn-primary px-sm-5' value='Добавить'>
-              </div>
-            </div> 
-          </form>
+      </section>
+      <section class="container-fluid container-xxl p-5">
+        <div class="row">
+          <div class="col-md-10 col-lg-8 order-1 mx-auto posts">
+            <ul class="posts"></ul>
+          </div>
+          <div class="col-md-10 col-lg-4 mx-auto order-0 order-lg-1 feeds">
+            <ul class="feeds"></ul>
+          </div>
         </div>
       </section>
     </main>
