@@ -17,7 +17,8 @@ const app = (i18nextInstance) => {
       valid: true,
       errors: [],
     },
-    feed: [],
+    feeds: [],
+    channels: [],
   };
 
   // elements list by selectors
@@ -53,11 +54,11 @@ const app = (i18nextInstance) => {
     const formData = new FormData(e.target); // never forget about e.target
     const link = formData.get('url'); // get url string
     schema.validate(link)
-      .then((validLink) => {
-        const getValid = getFeed(validLink, watchedState, i18nextInstance); // get the feed,
-        if (getValid !== false) { // checking if url is valid rss
-          watchedState.urlForm.feedList.push(validLink); // add new feed to feedList
+      .then((validLink) => getFeed(validLink, watchedState, i18nextInstance)
+        .then((feedArr) => {
           watchedState.urlForm.valid = true; // switch valid state to true
+          watchedState.urlForm.feedList.push(link); // add new feed link to feedList
+          state.feeds.push(feedArr); // add feed content to state.feed
           elements.form.reset();
           elements.formInput.focus();
           // renewing schema bacause notOneOf cant see changes in targeted array
@@ -65,15 +66,14 @@ const app = (i18nextInstance) => {
             .url()
             .required()
             .notOneOf(state.urlForm.feedList);
-        }
-      })
-      .catch((err) => {
+        }))
+      .catch((err) => { // error catcher watches for both 2 promises - validation and getter
         watchedState.urlForm.errors = []; // clear errors array
         watchedState.urlForm.errors.push(err.message); // add our new errors
         // .message give text only without "validation error:" first part of the string
         watchedState.urlForm.valid = false; // switch state validation to false
         elements.formInput.focus();
-      });
+      }); // get the feed, its promise
   };
   // add listener with submitHandler
   elements.form.addEventListener('submit', submitHandler);

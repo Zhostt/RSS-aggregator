@@ -21,14 +21,12 @@ const getFeed = (feedLink, state, i18nextInstance) => {
 
   // validate and parse RSS
   const parseRSS = (rssPromise) => rssPromise
-    .then((responce) => { // fun should return promise
-    // cause we work with promises since getRss till the end
+    .then((responce) => { // func should return promise
+    // ^ cause we work with promises since getRss till the end
     // check if link contains RSS tag
       if (!responce.data.contents.includes('rss version')) {
       // if not - push new error to state errors and stop function
-        state.urlForm.valid = false;
-        state.urlForm.errors.push(i18nextInstance.t('validation.notRssErr'));
-        return false;
+        throw new Error(i18nextInstance.t('validation.notRssErr'));
       }
       // if its rss - lets parse
       const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
@@ -54,14 +52,7 @@ const getFeed = (feedLink, state, i18nextInstance) => {
   const url = getLastUrlAllOrig(feedLink);
   const rssPromise = getRss(url);
   // stop if validation failed
-  parseRSS(rssPromise) // parseRSS return promise
-    .then((feedArr) => {
-      if (feedArr !== false) {
-        state.feed.push(feedArr);
-        return feedArr;
-      }
-      return false;
-    }); // and we push returned arr to state
+  return parseRSS(rssPromise); // parseRSS return promise
 };
 
 export default getFeed;
