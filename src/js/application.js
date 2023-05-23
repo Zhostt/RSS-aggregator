@@ -93,10 +93,10 @@ const app = (i18nextInstance) => {
     const formData = new FormData(e.target); // never forget about e.target as arg
     const link = formData.get('url');
     schema.validate(link)
-      .then((validLink) => getFeed(validLink, i18nextInstance) // wait for validation schema to validate
-        .then((channelFeedObj) => { // then wait for getter to get feed&posts(look what getFeed returns) and validate link (rss or err)
-          feedLoadedHandler(channelFeedObj);
-        }))
+      .then((validLink) => getFeed(validLink, i18nextInstance)) // wait for validation schema to validate, then validate rss
+      .then((channelFeedObj) => { // get obj with feed & posts data
+        feedLoadedHandler(channelFeedObj);
+      })
       .catch((err) => { // error catcher watches for both 2 promises -
         // validation and getter should be on same level with 1st one, not nested in it
         feedErrorHandler(err);
@@ -110,7 +110,7 @@ const app = (i18nextInstance) => {
 const runApp = () => {
   const i18nextInstance = i18n.createInstance();
   i18nextInstance.init({
-    lng: 'ru', // Current language
+    lng: 'en', // Current language
     debug: false,
     resources, // from locales
   })
