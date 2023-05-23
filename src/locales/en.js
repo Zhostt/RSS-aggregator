@@ -1,7 +1,7 @@
 export default {
   translation: {
     validation: {
-      sucess: 'RSS loaded sucessfylly',
+      success: 'RSS loaded sucessfylly',
       urlErr: 'Enter URL',
       requiredErr: 'Field is required',
       notOneOfErr: 'URL already added',
