@@ -25,9 +25,16 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       const lastAddedFeed = value[value.length - 1]; // select last added feed, our value is renewed array of objects (state.feeds)
       feedLi.innerHTML = `<h3 class="channel-title h6 m-0">${lastAddedFeed.title}</h2><p class="channel-descr">${lastAddedFeed.description}</p>`;
       elements.feeds.append(feedLi); // insert created el as first one
-      // add posts for that feed
-      const postsForThisFeed = state.posts.filter((post) => post.feedId === lastAddedFeed.id); // id === id of last added feed
-      postsForThisFeed.forEach((post) => {
+
+      // feedback that feed loaded properly
+      const successP = document.createElement('p');
+      successP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-success');
+      successP.textContent = i18nextInstance.t('validation.success');
+      elements.form.append(successP);
+    }
+    // add any new posts
+    if (path === 'posts') {
+      value.forEach((post) => { // incoming value is array of post objects (dunno why spread doesnt work there)
         const postLi = document.createElement('li');
         const postLink = document.createElement('a');
         postLink.href = post.link;
@@ -35,11 +42,6 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
         postLi.append(postLink);
         elements.posts.append(postLi);
       });
-      // feedback that everything loaded properly
-      const sucessP = document.createElement('p');
-      sucessP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-success');
-      sucessP.textContent = i18nextInstance.t('validation.success');
-      elements.form.append(sucessP);
     }
   });
   return watchedFeedForm;
