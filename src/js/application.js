@@ -18,8 +18,8 @@ const app = (i18nextInstance) => {
       valid: true,
       errors: [],
     },
-    feeds: [],
-    posts: [],
+    feeds: [], // id, title, description, URL
+    posts: [], // structure: title, description, link, feedId
   };
 
   // elements list by selectors
@@ -57,20 +57,21 @@ const app = (i18nextInstance) => {
     return hasObj;
   };
 
-  // Validation & getFeed = OK. Got channelFeedObj from getFeed()
-  const feedLoadedHandler = (channelFeedObj) => {
-    watchedState.urlForm.valid = true;
-    // if feed or post is not added already - add to state if not. Thats for continous getFeed
-    if (!arrayHasObject(watchedState.feeds, channelFeedObj.feed)) {
+  // Validation & getFeed = OK. Got channelFeedObj from getFeed(). onSubmit=true handles submitting feed; false - for continious checks for already added
+  const feedLoadedHandler = (channelFeedObj, onSubmit = true) => {
+    // if its new submit - add feed to feeds list
+    if (onSubmit === true) {
+      watchedState.urlForm.valid = true;
       watchedState.feeds.push(channelFeedObj.feed);
+      elements.form.reset();
+      elements.formInput.focus();
     }
+    // for continous checks for new posts & submitting new feeds - checking if post already added to state.posts
     channelFeedObj.postsArr.forEach((post) => {
-      if (!arrayHasObject(watchedState.posts, channelFeedObj.postArr)) {
+      if (!arrayHasObject(watchedState.posts, post)) {
         watchedState.posts.push(post);
       }
     });
-    elements.form.reset();
-    elements.formInput.focus();
     // renewing schema because notOneOf cant see changes in targeted array
     schema = yup.string()
       .url()
@@ -97,13 +98,29 @@ const app = (i18nextInstance) => {
       .then((channelFeedObj) => { // get obj with feed & posts data
         feedLoadedHandler(channelFeedObj);
       })
-      .catch((err) => { // error catcher watches for both 2 promises -
-        // validation and getter should be on same level with 1st one, not nested in it
+      .catch((err) => { // error catcher watches for both 2 promises above - yup valid and rss validation
         feedErrorHandler(err);
       });
   };
+  // function that checks added feeds every 5 seconds (should be used recursively)
+  // not setInterval because of possible net problems
+  const feedsChecker = (watchedState, mseconds = 5000) => {
+    const feedsLinks = watchedState.feeds.map((feed) => feed.URL); // array of URL to feeds (submitted)
+    if (feedsLinks.length > 0) {
+      feedsLinks.forEach((URL) => {
+        getFeed(URL, i18nextInstance)
+          .then((channelFeedObj) => feedLoadedHandler(channelFeedObj, false)) // false = onSubmit
+          .then(() => {
+            setTimeout(() => feedsChecker(watchedState, mseconds), mseconds);
+          });
+      });
+    } else { setTimeout(() => feedsChecker(watchedState, mseconds), mseconds); }
+  };
+
   // add listener with submitHandler
   elements.form.addEventListener('submit', submitHandler);
+  // set initial timeout for checker
+  setTimeout(() => feedsChecker(watchedState), 5000);
 };
 
 // to initialize instance of i18n without async/await we should envelop it

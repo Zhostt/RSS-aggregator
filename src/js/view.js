@@ -6,7 +6,11 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
     // if submit is valid - delete red frame
     if (path === 'urlForm.valid' && value === true) {
       elements.formInput.classList.remove('is-invalid');
-      // тут будет отрисовка фида
+      // feedback that feed loaded properly
+      const successP = document.createElement('p');
+      successP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-success');
+      successP.textContent = i18nextInstance.t('validation.success');
+      elements.form.append(successP);
 
       // if submit is invalid (newly invalid or was invalid and invalid again)
     } else if ((path === 'urlForm.valid' && value === false) || (path === 'urlForm.errors' && value !== [])) {
@@ -25,23 +29,21 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       const lastAddedFeed = value[value.length - 1]; // select last added feed, our value is renewed array of objects (state.feeds)
       feedLi.innerHTML = `<h3 class="channel-title h6 m-0">${lastAddedFeed.title}</h2><p class="channel-descr">${lastAddedFeed.description}</p>`;
       elements.feeds.append(feedLi); // insert created el as first one
-
-      // feedback that feed loaded properly
-      const successP = document.createElement('p');
-      successP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-success');
-      successP.textContent = i18nextInstance.t('validation.success');
-      elements.form.append(successP);
     }
     // add any new posts
     if (path === 'posts') {
-      // incoming value is array of posts objects, everytime bigger. We need last one added
-      const addedPost = value[value.length - 1];
-      const postLi = document.createElement('li');
-      const postLink = document.createElement('a');
-      postLink.href = addedPost.link;
-      postLink.textContent = addedPost.title;
-      postLi.append(postLink);
-      elements.posts.append(postLi);
+      document.querySelectorAll('.post-list-el').forEach((el) => el.remove()); // delete all viewed feed for renewing
+      // incoming value is array of posts objects, everytime bigger. We need last version of array added
+      const postsArr = value;
+      postsArr.forEach((post) => {
+        const postLi = document.createElement('li');
+        const postLink = document.createElement('a');
+        postLink.href = post.link;
+        postLink.textContent = post.title;
+        postLi.classList.add('post-list-el');
+        postLi.append(postLink);
+        elements.posts.prepend(postLi);
+      });
     }
   });
   return watchedFeedForm;
