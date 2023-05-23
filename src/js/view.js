@@ -34,14 +34,14 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
     }
     // add any new posts
     if (path === 'posts') {
-      value.forEach((post) => { // incoming value is array of post objects (dunno why spread doesnt work there)
-        const postLi = document.createElement('li');
-        const postLink = document.createElement('a');
-        postLink.href = post.link;
-        postLink.textContent = post.title;
-        postLi.append(postLink);
-        elements.posts.append(postLi);
-      });
+      // incoming value is array of posts objects, everytime bigger. We need last one added
+      const addedPost = value[value.length - 1];
+      const postLi = document.createElement('li');
+      const postLink = document.createElement('a');
+      postLink.href = addedPost.link;
+      postLink.textContent = addedPost.title;
+      postLi.append(postLink);
+      elements.posts.append(postLi);
     }
   });
   return watchedFeedForm;

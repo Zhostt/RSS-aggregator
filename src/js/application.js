@@ -2,6 +2,8 @@
 import * as yup from 'yup';
 // localization lib
 import i18n from 'i18next';
+// lodash is lodash
+import _ from 'lodash';
 // render from our view.js file
 import renderStateOnWatch from './view.js';
 // localization files from i18next
@@ -49,7 +51,43 @@ const app = (i18nextInstance) => {
     .required()
     .notOneOf(state.feeds.map((feed) => feed.URL)); // not in already added URLs
 
-  // handle submits based on validation by schema
+  // check if array has specific obj - if state alrady have posts and feeds. Returns Boolean
+  const arrayHasObject = (array, obj) => {
+    const hasObj = array.some((item) => _.isEqual(item, obj));
+    return hasObj;
+  };
+
+  // Validation & getFeed = OK. Got channelFeedObj from getFeed()
+  const feedLoadedHandler = (channelFeedObj) => {
+    watchedState.urlForm.valid = true;
+    // if feed or post is not added already - add to state if not. Thats for continous getFeed
+    if (!arrayHasObject(watchedState.feeds, channelFeedObj.feed)) {
+      watchedState.feeds.push(channelFeedObj.feed);
+    }
+    channelFeedObj.postsArr.forEach((post) => {
+      if (!arrayHasObject(watchedState.posts, channelFeedObj.postArr)) {
+        watchedState.posts.push(post);
+      }
+    });
+    elements.form.reset();
+    elements.formInput.focus();
+    // renewing schema because notOneOf cant see changes in targeted array
+    schema = yup.string()
+      .url()
+      .required()
+      .notOneOf(state.feeds.map((feed) => feed.URL));
+  };
+
+  // Validation || getFeed ERROR
+  const feedErrorHandler = (err) => {
+    // push errors to state, switch valid to false, refocus
+    watchedState.urlForm.errors = [];
+    watchedState.urlForm.errors.push(err.message); // .message return text only without "validation error:" first part of the string
+    watchedState.urlForm.valid = false;
+    elements.formInput.focus();
+  };
+
+  // handle submits based on validation by schema & getFeed
   const submitHandler = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target); // never forget about e.target as arg
@@ -57,24 +95,11 @@ const app = (i18nextInstance) => {
     schema.validate(link)
       .then((validLink) => getFeed(validLink, i18nextInstance) // wait for validation schema to validate
         .then((channelFeedObj) => { // then wait for getter to get feed&posts(look what getFeed returns) and validate link (rss or err)
-          watchedState.urlForm.valid = true;
-          watchedState.posts.push(...channelFeedObj.postsArr); // add feed content (articles) to state.feed. Spread to flat it
-          watchedState.feeds.push(channelFeedObj.feed);
-          console.log(state.feeds, '\n', state.posts);
-          elements.form.reset();
-          elements.formInput.focus();
-          // renewing schema because notOneOf cant see changes in targeted array
-          schema = yup.string()
-            .url()
-            .required()
-            .notOneOf(state.feeds.map((feed) => feed.URL));
+          feedLoadedHandler(channelFeedObj);
         }))
-      .catch((err) => { // error catcher watches for both 2 promises - validation and getter should be on same level with 1st one, not nested in it
-      // push errors to state, switch valid to false, refocus
-        watchedState.urlForm.errors = [];
-        watchedState.urlForm.errors.push(err.message); // .message return text only without "validation error:" first part of the string
-        watchedState.urlForm.valid = false;
-        elements.formInput.focus();
+      .catch((err) => { // error catcher watches for both 2 promises -
+        // validation and getter should be on same level with 1st one, not nested in it
+        feedErrorHandler(err);
       });
   };
   // add listener with submitHandler
