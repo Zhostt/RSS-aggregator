@@ -40,7 +40,6 @@ const getFeed = (feedLink, i18nextInstance) => {
   const getFeedAndPosts = (DOMElement) => {
     // getting feed data
     const feed = {
-      // id,
       title: DOMElement.querySelector('title').textContent,
       description: DOMElement.querySelector('description').textContent,
       URL: feedLink, // instead of id - submitted link
@@ -50,11 +49,14 @@ const getFeed = (feedLink, i18nextInstance) => {
     // from every item in rss we need: description, link, title (title should be a text of link), ID for feed
     const postsArr = []; // array that will be pushed to state. Not direct push to make this clean
     itemElArr.forEach((item) => { // for each item
-      const postObj = { // we form according feed item obj that will go to state
+      // ID is complicated - no special characters, cant begin with int. Cant genereate it each time - it will regenerate every feedCheck (5 sec) and make post doubles. So we get GUID of post and make correct string id out of it
+      const normalisedPostGuid = item.querySelector('guid').textContent.replace(/[^\w\s]/gi, ''); // delete spec chars in post guid
+      const postId = `post${normalisedPostGuid}`;
+      const postObj = { // form according feed item obj that will go to state
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
-        id: `post-${item.querySelector('guid').textContent}`, // id for posts only, cant start with number
+        id: postId,
         feedURL: feedLink, // link between feed and post by feed URL
       };
       postsArr.push(postObj);
