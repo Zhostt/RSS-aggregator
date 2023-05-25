@@ -6,6 +6,7 @@ export default {
       requiredErr: 'Field is required',
       notOneOfErr: 'URL already added',
       notRssErr: 'No valid RSS on this path',
+      networkErr: 'Network error',
     },
     buttons: {
       view: 'View',

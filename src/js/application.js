@@ -36,6 +36,7 @@ const app = (i18nextInstance) => {
     feeds: document.querySelector('ul.feeds'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
+    modalReadFull: document.querySelector('.full-article'),
   };
   // make state watched by function from module view.js
   const watchedState = renderStateOnWatch(state, elements, i18nextInstance);
@@ -150,7 +151,7 @@ const app = (i18nextInstance) => {
 const runApp = () => {
   const i18nextInstance = i18n.createInstance();
   i18nextInstance.init({
-    lng: 'en', // Current language
+    lng: 'ru', // Current language
     debug: false,
     resources, // from locales
   })

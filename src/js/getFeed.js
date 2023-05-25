@@ -70,7 +70,8 @@ const getFeed = (feedLink, i18nextInstance) => {
     .then((responce) => {
       const DOMElement = parseRSS(responce);
       return getFeedAndPosts(DOMElement);
-    });
+    })
+    .catch((err) => { throw new Error(i18nextInstance.t('validation.networkErr')); }); // handling network errors
 };
 
 export default getFeed;
