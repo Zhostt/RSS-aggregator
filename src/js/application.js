@@ -106,7 +106,7 @@ const app = (i18nextInstance) => {
       .then((channelFeedObj) => { // get obj with feed & posts data
         feedLoadedHandler(channelFeedObj);
       })
-      .catch((err) => { // error catcher watches for both 2 promises above - yup valid and rss validation
+      .catch((err) => { // error catcher watches for both 2 promises above - yup valid and rss/network validation
         feedErrorHandler(err);
       });
   };
