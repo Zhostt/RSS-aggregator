@@ -6,7 +6,7 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
   elements.modal.close.textContent = i18nextInstance.t('buttons.close');
 
   const clearFeedback = () => document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
-  const watchedFeedForm = onChange(state, (path, value, previousValue) => {
+  const watchedFeedForm = onChange(state, (path, value) => {
     // if submit is valid - delete red frame
     if (path === 'urlForm.valid' && value === true) {
       elements.formInput.classList.remove('is-invalid');
@@ -26,7 +26,8 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
     if (path === 'feeds') {
       // add feed title and descr
       const feedLi = document.createElement('li');
-      const lastAddedFeed = value[value.length - 1]; // select last added feed, our value is renewed array of objects (state.feeds)
+      // select last added feed, our value is renewed array of objects (state.feeds)
+      const lastAddedFeed = value[value.length - 1];
       feedLi.innerHTML = `<h3 class="channel-title h6 m-0">${lastAddedFeed.title}</h2><p class="channel-descr">${lastAddedFeed.description}</p>`;
       elements.feeds.append(feedLi); // insert created el as first one
       // feedback that feed loaded properly
@@ -39,7 +40,7 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
     // add any new posts
     if (path === 'posts') {
       document.querySelectorAll('.post-list-el').forEach((el) => el.remove()); // delete all viewed feed for renewing
-      // incoming value is array of posts objects, everytime bigger. We need last version of array added
+      // incoming value is array of posts objects, everytime bigger.
       const postsArr = value;
       postsArr.forEach((post) => { // create li el, link and button in it
         const postLi = document.createElement('li');
@@ -72,9 +73,11 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       readPost.classList.remove('fw-bold');
       readPost.classList.add('fw-normal');
       // set texts in modal
-      const viewedPostObj = state.posts.find((post) => post.id === valueID); // find viewed post by id
+      // find viewed post by id
+      const viewedPostObj = state.posts.find((post) => post.id === valueID);
       console.log('viewedObj', viewedPostObj);
-      elements.modal.title.textContent = viewedPostObj.title; // change modal textContent accrodingly
+      // change modal textContent accrodingly
+      elements.modal.title.textContent = viewedPostObj.title;
       elements.modal.body.textContent = viewedPostObj.description;
     }
   });

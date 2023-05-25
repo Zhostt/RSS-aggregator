@@ -20,18 +20,16 @@ const getFeed = (feedLink, i18nextInstance) => {
   // get responce from url
   const getRss = (url) => axios.get(url)
     .then((responce) => responce)// return responce - XML file (if rss is rss)
-    .catch((err) => { throw new Error(i18nextInstance.t('validation.networkErr')); });
+    .catch(() => { throw new Error(i18nextInstance.t('validation.networkErr')); });
 
   // validate and parse RSS
-  const parseRSS = (responce) => { // func should return promise cause we work with promises since getRss till the end
+  const parseRSS = (responce) => { // func should return promise
     // check if link contains RSS tag
     if (!responce.data.contents.includes('<rss')) {
-      const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
-      const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
       throw new Error(i18nextInstance.t('validation.notRssErr'));
     }
     // if its rss - lets parse
-    const parser = new DOMParser();
+    const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
     const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
     return DOMElement;
   };
@@ -45,10 +43,13 @@ const getFeed = (feedLink, i18nextInstance) => {
     };
     // getting posts data
     const itemElArr = DOMElement.querySelectorAll('item'); // tags <item> will contain what we need (thats RSS structure)
-    // from every item in rss we need: description, link, title (title should be a text of link), ID for feed
+    // from every item in rss we need:
+    // description, link, title (title should be a text of link), ID for feed
     const postsArr = []; // array that will be pushed to state. Not direct push to make this clean
     itemElArr.forEach((item) => { // for each item
-      // ID is complicated - no special characters, cant begin with int. Cant genereate it each time - it will regenerate every feedCheck (5 sec) and make post doubles. So we get GUID of post and make correct string id out of it
+      // ID is complicated - no special characters, cant begin with int.
+      // Cant genereate it each time - will regenerate every feedCheck (5 sec) and make post doubles
+      // So we get GUID of post and make correct string id out of it
       const normalisedPostGuid = item.querySelector('guid').textContent.replace(/[^\w\s]/gi, ''); // delete spec chars in post guid
       const postId = `post${normalisedPostGuid}`;
       const postObj = { // form according feed item obj that will go to state
@@ -72,7 +73,8 @@ const getFeed = (feedLink, i18nextInstance) => {
     })
     .catch((err) => {
       console.log('GETFEED ERR', err);
-      throw new Error(err.message); // throw err up to application.js. If not .message it not handled correctly in application.js
+      // throw err up to application.js. If not .message its not handled correctly in application.js
+      throw new Error(err.message);
     });
 };
 

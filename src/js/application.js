@@ -68,7 +68,8 @@ const app = (i18nextInstance) => {
     return hasObj;
   };
 
-  // Validation & getFeed = OK. Got channelFeedObj from getFeed(). onSubmit=true handles submitting feed; false - for continious checks for already added
+  // Validation & getFeed = OK. Got channelFeedObj from getFeed().
+  // onSubmit=true handles submitting feed; false - for continious checks for already added
   const feedLoadedHandler = (channelFeedObj, onSubmit = true) => {
     // if its new submit - add feed to feeds list
     if (onSubmit === true) {
@@ -77,7 +78,8 @@ const app = (i18nextInstance) => {
       elements.form.reset();
       elements.formInput.focus();
     }
-    // for continous checks for new posts & submitting new feeds - checking if post already added to state.posts
+    // for continous checks for new posts & submitting new feeds
+    //  - checking if post already added to state.posts
     channelFeedObj.postsArr.forEach((post) => {
       if (!arrayHasObject(watchedState.posts, post)) {
         watchedState.posts.push(post);
@@ -94,7 +96,8 @@ const app = (i18nextInstance) => {
   const feedErrorHandler = (err) => {
     // push errors to state, switch valid to false, refocus
     watchedState.urlForm.errors = [];
-    watchedState.urlForm.errors.push(err.message); // .message return text only without "validation error:" first part of the string
+    // .message return text only without "validation error:" first part of the string
+    watchedState.urlForm.errors.push(err.message);
     watchedState.urlForm.valid = false;
     elements.formInput.focus();
   };
@@ -105,27 +108,30 @@ const app = (i18nextInstance) => {
     const formData = new FormData(e.target); // never forget about e.target as arg
     const link = formData.get('url');
     schema.validate(link)
-      .then((validLink) => getFeed(validLink, i18nextInstance)) // wait for validation schema to validate, then validate rss
+    // wait for validation schema to validate, then validate rss
+      .then((validLink) => getFeed(validLink, i18nextInstance))
       .then((channelFeedObj) => { // get obj with feed & posts data
         feedLoadedHandler(channelFeedObj);
       })
-      .catch((err) => { // error catcher watches for both 2 promises above - yup valid and rss/network validation
+      .catch((err) => { // error catcher watches for both 2 promises above -
+        // - yup valid and rss/network validation
         feedErrorHandler(err);
       });
   };
   // function that checks added feeds every 5 seconds (should be used recursively)
   // not setInterval because of possible net problems
-  const feedsChecker = (watchedState, mseconds = 5000) => {
-    const feedsLinks = watchedState.feeds.map((feed) => feed.URL); // array of URLs to feeds (submitted)
+  const feedsChecker = (stateObj, mseconds = 5000) => {
+    // array of URLs to feeds (submitted)
+    const feedsLinks = stateObj.feeds.map((feed) => feed.URL);
     if (feedsLinks.length > 0) {
       feedsLinks.forEach((URL) => {
         getFeed(URL, i18nextInstance)
           .then((channelFeedObj) => feedLoadedHandler(channelFeedObj, false)) // false = onSubmit
           .then(() => {
-            setTimeout(() => feedsChecker(watchedState, mseconds), mseconds);
+            setTimeout(() => feedsChecker(stateObj, mseconds), mseconds);
           });
       });
-    } else { setTimeout(() => feedsChecker(watchedState, mseconds), mseconds); }
+    } else { setTimeout(() => feedsChecker(stateObj, mseconds), mseconds); }
   };
 
   // preview posts handler, shoud be used on parent container of added post links
