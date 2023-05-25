@@ -6,7 +6,7 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
   elements.modal.close.textContent = i18nextInstance.t('buttons.close');
 
   const clearFeedback = () => document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
-  const watchedFeedForm = onChange(state, (path, value) => {
+  const watchedState = onChange(state, (path, value) => {
     // if submit is valid - delete red frame
     if (path === 'urlForm.valid' && value === true) {
       elements.formInput.classList.remove('is-invalid');
@@ -81,6 +81,7 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       elements.modal.body.textContent = viewedPostObj.description;
     }
   });
-  return watchedFeedForm;
+  const returnVal = { watchedState }; // because of naming convention for renders !!!
+  return returnVal;
 };
 export default renderStateOnWatch;

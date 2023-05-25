@@ -42,7 +42,8 @@ const app = (i18nextInstance) => {
     },
   };
   // make state watched by function from module view.js
-  const watchedState = renderStateOnWatch(state, elements, i18nextInstance);
+  // destructured way cause of naming convention for renders
+  const { watchedState } = renderStateOnWatch(state, elements, i18nextInstance);
 
   // set default error messages for different validations, based on our i18next translations
   yup.setLocale({
