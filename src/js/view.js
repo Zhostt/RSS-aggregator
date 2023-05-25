@@ -1,6 +1,10 @@
 import onChange from 'on-change';
 
 const renderStateOnWatch = (state, elements, i18nextInstance) => {
+  // setting modal buttons names according ot locale
+  elements.modal.read.textContent = i18nextInstance.t('buttons.read');
+  elements.modal.close.textContent = i18nextInstance.t('buttons.close');
+
   const clearFeedback = () => document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
   const watchedFeedForm = onChange(state, (path, value, previousValue) => {
     // if submit is valid - delete red frame
@@ -70,8 +74,8 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       // set texts in modal
       const viewedPostObj = state.posts.find((post) => post.id === valueID); // find viewed post by id
       console.log('viewedObj', viewedPostObj);
-      elements.modalTitle.textContent = viewedPostObj.title; // change modal textContent accrodingly
-      elements.modalBody.textContent = viewedPostObj.description;
+      elements.modal.title.textContent = viewedPostObj.title; // change modal textContent accrodingly
+      elements.modal.body.textContent = viewedPostObj.description;
     }
   });
   return watchedFeedForm;

@@ -10,6 +10,8 @@ export default {
     },
     buttons: {
       view: 'View',
+      close: 'Close',
+      read: 'Read',
     },
   },
 };

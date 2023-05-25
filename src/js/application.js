@@ -34,9 +34,12 @@ const app = (i18nextInstance) => {
     formSubmit: document.querySelector('#submit'),
     posts: document.querySelector('ul.posts'),
     feeds: document.querySelector('ul.feeds'),
-    modalTitle: document.querySelector('.modal-title'),
-    modalBody: document.querySelector('.modal-body'),
-    modalReadFull: document.querySelector('.full-article'),
+    modal: {
+      title: document.querySelector('.modal-title'),
+      body: document.querySelector('.modal-body'),
+      read: document.querySelector('.full-article'),
+      close: document.querySelector('.btn-secondary-close'),
+    },
   };
   // make state watched by function from module view.js
   const watchedState = renderStateOnWatch(state, elements, i18nextInstance);
@@ -156,6 +159,7 @@ const runApp = () => {
     resources, // from locales
   })
     .then(() => {
+      // naming modal buttons accordingly to locale
       app(i18nextInstance);
     })
     .catch((e) => {
