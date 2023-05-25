@@ -20,6 +20,7 @@ const app = (i18nextInstance) => {
     },
     feeds: [], // id, title, description, URL
     posts: [], // structure: title, description, link, feedId
+    UIstate: [],
   };
 
   // elements list by selectors
