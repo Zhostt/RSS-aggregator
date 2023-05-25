@@ -33,12 +33,11 @@ const getFeed = (feedLink, i18nextInstance) => {
     // if its rss - lets parse
     const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
     const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
-    console.log(DOMElement);
+    // console.log('RECIEVED DOM ELEMENT', DOMElement);
     return DOMElement;
   };
 
   const getFeedAndPosts = (DOMElement) => {
-    // const id = Date.now().toString(); // generate ID by timestamp // Will use submitted URL instead of that
     // getting feed data
     const feed = {
       // id,
@@ -55,17 +54,17 @@ const getFeed = (feedLink, i18nextInstance) => {
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
-        feedURL: feedLink, // instead of id
-        // feedId: id,
+        guid: item.querySelector('guid').textContent, // id for posts only
+        feedURL: feedLink, // link between feed and post by feed URL
       };
       postsArr.push(postObj);
     });
-    const channelpostObj = { feed, postsArr }; // func return feed obj and arr of posts objects
-    return channelpostObj;
+    const feedPostObj = { feed, postsArr }; // func return feed obj and arr of posts objects
+    return feedPostObj;
   };
   // and start all that
   const url = getLastUrlAllOrig(feedLink);
-  return getRss(url) // will return promise with channelpostObj from getFeedAndPosts
+  return getRss(url) // will return promise with feedPostObj from getFeedAndPosts
     .then((responce) => {
       const DOMElement = parseRSS(responce);
       return getFeedAndPosts(DOMElement);

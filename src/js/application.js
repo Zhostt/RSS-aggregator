@@ -19,8 +19,10 @@ const app = (i18nextInstance) => {
       errors: [],
     },
     feeds: [], // id, title, description, URL
-    posts: [], // structure: title, description, link, feedId
-    UIstate: [],
+    posts: [], // structure: title, description, link, feedURL
+    UIstate: [
+      // {}
+    ],
   };
 
   // elements list by selectors
