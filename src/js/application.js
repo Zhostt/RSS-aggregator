@@ -20,9 +20,11 @@ const app = (i18nextInstance) => {
     },
     feeds: [], // id, title, description, URL
     posts: [], // structure: title, description, link, feedURL
-    UIstate: [
-      // {}
-    ],
+    UIstate: {
+      readPosts: [ // tracking already read posts
+      // {postId, modalOpen}
+      ],
+    },
   };
 
   // elements list by selectors
@@ -32,6 +34,8 @@ const app = (i18nextInstance) => {
     formSubmit: document.querySelector('#submit'),
     posts: document.querySelector('ul.posts'),
     feeds: document.querySelector('ul.feeds'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
   };
   // make state watched by function from module view.js
   const watchedState = renderStateOnWatch(state, elements, i18nextInstance);
@@ -120,10 +124,26 @@ const app = (i18nextInstance) => {
     } else { setTimeout(() => feedsChecker(watchedState, mseconds), mseconds); }
   };
 
+  // preview posts handler, shoud be used on parent container of added post links
+  const previewHandler = (e) => {
+    if (e.target.tagName === 'BTN') { // will handle event only if button clicked (not container)
+      const clickedButton = e.target;
+      const readPostObj = {
+        id: clickedButton.id,
+        modalOpen: true,
+      };
+      watchedState.UIstate.readPosts.push(readPostObj);
+      e.stopImmediatePropagation();
+    }
+  };
+
+  // Starting
   // add listener with submitHandler
   elements.form.addEventListener('submit', submitHandler);
   // set initial timeout for checker
   setTimeout(() => feedsChecker(watchedState), 5000);
+  // listener to clicks on posts - preview
+  elements.posts.addEventListener('click', previewHandler);
 };
 
 // to initialize instance of i18n without async/await we should envelop it
@@ -138,7 +158,7 @@ const runApp = () => {
       app(i18nextInstance);
     })
     .catch((e) => {
-      throw new Error('i18next initialization Error');
+      throw new Error(`i18next initialization Error - ${e}`);
     });
 };
 

@@ -54,7 +54,7 @@ const getFeed = (feedLink, i18nextInstance) => {
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
-        guid: item.querySelector('guid').textContent, // id for posts only
+        id: `post-${item.querySelector('guid').textContent}`, // id for posts only, cant start with number
         feedURL: feedLink, // link between feed and post by feed URL
       };
       postsArr.push(postObj);

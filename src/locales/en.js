@@ -7,5 +7,8 @@ export default {
       notOneOfErr: 'URL already added',
       notRssErr: 'No valid RSS on this path',
     },
+    buttons: {
+      view: 'View',
+    },
   },
 };

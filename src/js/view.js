@@ -35,15 +35,41 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       document.querySelectorAll('.post-list-el').forEach((el) => el.remove()); // delete all viewed feed for renewing
       // incoming value is array of posts objects, everytime bigger. We need last version of array added
       const postsArr = value;
-      postsArr.forEach((post) => {
+      postsArr.forEach((post) => { // create li el, link and button in it
         const postLi = document.createElement('li');
         const postLink = document.createElement('a');
+        const postViewBtn = document.createElement('btn');
+        // link
         postLink.href = post.link;
+        postLink.id = post.id;
         postLink.textContent = post.title;
-        postLi.classList.add('post-list-el');
+        postLink.classList.add('fw-bold');
+        // button
+        postViewBtn.id = post.id;
+        postViewBtn.textContent = i18nextInstance.t('buttons.view');
+        postViewBtn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        postViewBtn.setAttribute('data-bs-toggle', 'modal');
+        postViewBtn.setAttribute('data-bs-target', '#previewModal');
+        // li element
+        postLi.classList.add('post-list-el', 'list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
         postLi.append(postLink);
+        postLi.append(postViewBtn);
         elements.posts.prepend(postLi);
       });
+    }
+    // modal window on click View button
+    if (path === 'UIstate.readPosts') {
+      // set post title as read (no more bold)
+      console.log('value in state', value);
+      const valueID = value[value.length - 1].id;
+      const readPost = document.querySelector(`#${valueID}`); // select el by last added id to readPosts state
+      readPost.classList.remove('fw-bold');
+      readPost.classList.add('fw-normal');
+      // set texts in modal
+      const viewedPostObj = state.posts.find((post) => post.id === valueID); // find viewed post by id
+      console.log('viewedObj', viewedPostObj);
+      elements.modalTitle.textContent = viewedPostObj.title; // change modal textContent accrodingly
+      elements.modalBody.textContent = viewedPostObj.description;
     }
   });
   return watchedFeedForm;

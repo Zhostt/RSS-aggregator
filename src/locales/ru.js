@@ -7,5 +7,8 @@ export default {
       notOneOfErr: 'URL уже был добавлен',
       notRssErr: 'Ресурс не содержит валидный RSS',
     },
+    buttons: {
+      view: 'Просмотр',
+    },
   },
 };
