@@ -113,7 +113,7 @@ const app = (i18nextInstance) => {
   // function that checks added feeds every 5 seconds (should be used recursively)
   // not setInterval because of possible net problems
   const feedsChecker = (watchedState, mseconds = 5000) => {
-    const feedsLinks = watchedState.feeds.map((feed) => feed.URL); // array of URL to feeds (submitted)
+    const feedsLinks = watchedState.feeds.map((feed) => feed.URL); // array of URLs to feeds (submitted)
     if (feedsLinks.length > 0) {
       feedsLinks.forEach((URL) => {
         getFeed(URL, i18nextInstance)

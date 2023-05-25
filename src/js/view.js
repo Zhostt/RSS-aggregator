@@ -2,18 +2,19 @@ import onChange from 'on-change';
 
 const renderStateOnWatch = (state, elements, i18nextInstance) => {
   const watchedFeedForm = onChange(state, (path, value, previousValue) => {
-    document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
     // if submit is valid - delete red frame
     if (path === 'urlForm.valid' && value === true) {
+      document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
       elements.formInput.classList.remove('is-invalid');
       // feedback that feed loaded properly
       const successP = document.createElement('p');
       successP.classList.add('feedback', 'm-0', 'position-relative', 'small', 'text-success');
       successP.textContent = i18nextInstance.t('validation.success');
-      elements.form.append(successP);
+      elements.form.appendChild(successP);
 
       // if submit is invalid (newly invalid or was invalid and invalid again)
     } else if ((path === 'urlForm.valid' && value === false) || (path === 'urlForm.errors' && value !== [])) {
+      document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
       elements.formInput.classList.add('is-invalid'); // making input invalid
       state.urlForm.errors.forEach((err) => { // create p elem for each error and add error text
         const errorP = document.createElement('p');
