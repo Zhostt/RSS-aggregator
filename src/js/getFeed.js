@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { isNumber } from 'lodash';
 
 // get from url. It gets xml
 // Parser. Returns array of objects with ...
@@ -19,7 +18,13 @@ const getFeed = (feedLink, i18nextInstance) => {
   };
 
   // get responce from url
-  const getRss = (url) => axios.get(url); // return responce - XML file (if rss is rss)
+  const getRss = (url) => axios.get(url)
+    .then((responce) => {
+      if (responce.status !== 200 || (responce.data.contents === null && responce.data.status.error)) {
+        throw new Error(i18nextInstance.t('validation.networkErr'));
+      }
+      return responce; // return responce - XML file (if rss is rss)
+    });
 
   // validate and parse RSS
   const parseRSS = (responce) => { // func should return promise cause we work with promises since getRss till the end
@@ -28,7 +33,7 @@ const getFeed = (feedLink, i18nextInstance) => {
       const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
       const DOMElement = parser.parseFromString(responce.data.contents, 'text/xml'); // will return DOM element
       console.log('ERROR', DOMElement);
-      throw new Error();
+      throw new Error(i18nextInstance.t('validation.notRssErr'));
     }
     // if its rss - lets parse
     const parser = new DOMParser(); // https://developer.mozilla.org/en-US/docs/Web/API/DOMParser/DOMParser
@@ -67,16 +72,13 @@ const getFeed = (feedLink, i18nextInstance) => {
   // and start all that
   const url = getLastUrlAllOrig(feedLink);
   return getRss(url)
-    .catch((err) => { // handling network errors
-      console.log(err);
-      throw new Error(i18nextInstance.t('validation.networkErr'));
-    })
     .then((responce) => {
       const DOMElement = parseRSS(responce);
       return getFeedAndPosts(DOMElement);
     })
     .catch((err) => {
-      throw new Error(i18nextInstance.t('validation.notRssErr'));
+      console.log('GET FEED ERR', err);
+      throw new Error(err.message);
     });
 };
 
