@@ -159,7 +159,6 @@ const app = (i18nextInstance) => {
   };
 
   const languageChangeHandler = (e) => {
-    const clickedButton = e.target;
     const newLanguage = e.target.id;
     watchedState.language = newLanguage;
   };
