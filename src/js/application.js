@@ -39,6 +39,14 @@ const app = (i18nextInstance) => {
       body: document.querySelector('.modal-body'),
       read: document.querySelector('.full-article'),
       close: document.querySelector('.btn-secondary-close'),
+      submit: document.querySelector('#submit'),
+    },
+    structure: {
+      mainTitle: document.querySelector('#mainTitle'),
+      secondTitle: document.querySelector('#secondTitle'),
+      exampleStatic: document.querySelector('#exampleStatic'),
+      exampleDynamic: document.querySelector('#exampleDynamic'),
+      submitPlaceholder: document.querySelector('#submitPlaceholder'),
     },
   };
   // make state watched by function from module view.js
@@ -161,7 +169,7 @@ const app = (i18nextInstance) => {
 const runApp = () => {
   const i18nextInstance = i18n.createInstance();
   i18nextInstance.init({
-    lng: 'en', // Current language
+    lng: 'ru', // Current language
     debug: false,
     resources, // from locales
   })
@@ -170,7 +178,7 @@ const runApp = () => {
       app(i18nextInstance);
     })
     .catch((e) => {
-      throw new Error(`i18next initialization Error - ${e}`);
+      throw new Error(`app initialization Error - ${e}`);
     });
 };
 

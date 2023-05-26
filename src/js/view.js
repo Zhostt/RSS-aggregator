@@ -1,10 +1,22 @@
 import onChange from 'on-change';
 
-const renderStateOnWatch = (state, elements, i18nextInstance) => {
-  // setting modal buttons names according ot locale
+// initial render according to locale
+const localeRender = (i18nextInstance, elements) => {
+  // modal buttons
   elements.modal.read.textContent = i18nextInstance.t('buttons.read');
   elements.modal.close.textContent = i18nextInstance.t('buttons.close');
+  // submit
+  elements.modal.submit.textContent = i18nextInstance.t('buttons.submit');
+  // basic static structure
+  elements.structure.mainTitle.textContent = i18nextInstance.t('structure.mainTitle');
+  elements.structure.secondTitle.textContent = i18nextInstance.t('structure.secondTitle');
+  elements.structure.exampleStatic.textContent = i18nextInstance.t('structure.exampleStatic');
+  elements.structure.exampleDynamic.textContent = i18nextInstance.t('structure.exampleDynamic');
+  elements.structure.submitPlaceholder.textContent = i18nextInstance.t('structure.submitPlaceholder');
+};
 
+const renderStateOnWatch = (state, elements, i18nextInstance) => {
+  localeRender(i18nextInstance, elements);
   const clearFeedback = () => document.querySelectorAll('.feedback').forEach((el) => el.remove()); // remove prev feedback messages
   const watchedState = onChange(state, (path, value) => {
     // if submit is valid - delete red frame
@@ -67,7 +79,6 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
     // modal window on click View button
     if (path === 'UIstate.readPosts') {
       // set post title as read (no more bold)
-      console.log('value in state', value);
       const valueID = value[value.length - 1].id;
       const readPost = document.querySelector(`#${valueID}`); // select el by last added id to readPosts state
       readPost.classList.remove('fw-bold');
@@ -75,7 +86,6 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       // set texts in modal
       // find viewed post by id
       const viewedPostObj = state.posts.find((post) => post.id === valueID);
-      console.log('viewedObj', viewedPostObj);
       // change modal textContent accrodingly
       elements.modal.title.textContent = viewedPostObj.title;
       elements.modal.body.textContent = viewedPostObj.description;

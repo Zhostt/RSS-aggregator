@@ -12,6 +12,14 @@ export default {
       view: 'Просмотр',
       close: 'Закрыть',
       read: 'Читать',
+      submit: 'Добавить',
+    },
+    structure: {
+      mainTitle: 'RSS агрегатор',
+      secondTitle: 'RSS фиды каждому, даром!',
+      exampleStatic: 'Пример: https://ru.hexlet.io/lessons.rss',
+      exampleDynamic: 'Пример с обновлением: https://lorem-rss.hexlet.app/feed?unit=second',
+      submitPlaceholder: 'RSS ссылка',
     },
   },
 };

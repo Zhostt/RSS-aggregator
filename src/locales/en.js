@@ -12,6 +12,14 @@ export default {
       view: 'View',
       close: 'Close',
       read: 'Read',
+      submit: 'Submit',
+    },
+    structure: {
+      mainTitle: 'RSS aggregator',
+      secondTitle: 'RSS feeds for everyone for free!',
+      exampleStatic: 'Example-static: https://ru.hexlet.io/lessons.rss',
+      exampleDynamic: 'Example-dynamic: https://lorem-rss.hexlet.app/feed?unit=second',
+      submitPlaceholder: 'RSS link',
     },
   },
 };
