@@ -117,7 +117,7 @@ const app = (i18nextInstance) => {
   const submitHandler = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target); // never forget about e.target as arg
-    const link = formData.get('url');
+    const link = formData.get('url').trim();
     schema.validate(link)
     // wait for validation schema to validate, then validate rss
       .then((validLink) => getFeed(validLink, i18nextInstance))
