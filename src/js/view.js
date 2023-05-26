@@ -79,6 +79,8 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       // change modal textContent accrodingly
       elements.modal.title.textContent = viewedPostObj.title;
       elements.modal.body.textContent = viewedPostObj.description;
+      // change read button link to clicked article
+      elements.modal.read.href = viewedPostObj.link;
     }
   });
   const returnVal = { watchedState }; // because of naming convention for renders !!!

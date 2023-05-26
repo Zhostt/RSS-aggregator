@@ -161,7 +161,7 @@ const app = (i18nextInstance) => {
 const runApp = () => {
   const i18nextInstance = i18n.createInstance();
   i18nextInstance.init({
-    lng: 'ru', // Current language
+    lng: 'en', // Current language
     debug: false,
     resources, // from locales
   })
