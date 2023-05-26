@@ -16,7 +16,10 @@ module.exports = {
     hot: true,
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: './index.html' }),
+    new HtmlWebpackPlugin({ 
+      template: './index.html', 
+      scriptLoading: 'blocking'
+    }),
   ],
   module: {
     rules: [
