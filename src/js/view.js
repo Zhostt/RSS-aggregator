@@ -13,6 +13,9 @@ const localeRender = (i18nextInstance, elements) => {
   elements.structure.exampleStatic.textContent = i18nextInstance.t('structure.exampleStatic');
   elements.structure.exampleDynamic.textContent = i18nextInstance.t('structure.exampleDynamic');
   elements.structure.submitPlaceholder.textContent = i18nextInstance.t('structure.submitPlaceholder');
+  // re-rendering existing view buttons
+  const viewButtons = document.querySelectorAll('.btn-view');
+  viewButtons.forEach((btn) => { btn.textContent = i18nextInstance.t('buttons.view'); });
 };
 
 const renderStateOnWatch = (state, elements, i18nextInstance) => {
@@ -58,18 +61,18 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
         const postLi = document.createElement('li');
         const postLink = document.createElement('a');
         const postViewBtn = document.createElement('btn');
-        // link
+        // post link
         postLink.href = post.link;
         postLink.id = post.id;
         postLink.textContent = post.title;
         postLink.classList.add('fw-bold');
-        // button
+        // view button
         postViewBtn.id = post.id;
         postViewBtn.textContent = i18nextInstance.t('buttons.view');
-        postViewBtn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        postViewBtn.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'btn-view');
         postViewBtn.setAttribute('data-bs-toggle', 'modal');
         postViewBtn.setAttribute('data-bs-target', '#previewModal');
-        // li element
+        // li element - container for both above
         postLi.classList.add('post-list-el', 'list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
         postLi.append(postLink);
         postLi.append(postViewBtn);
@@ -91,6 +94,13 @@ const renderStateOnWatch = (state, elements, i18nextInstance) => {
       elements.modal.body.textContent = viewedPostObj.description;
       // change read button link to clicked article
       elements.modal.read.href = viewedPostObj.link;
+    }
+
+    // language change
+    if (path === 'language') {
+      const newLang = value;
+      i18nextInstance.changeLanguage(newLang, (err) => { if (err) { throw new Error(`incorrent lang. Recieved ${value}`); } }); // changeLanguage method from i18nextInstance, recieving new lang and callback for error handling
+      localeRender(i18nextInstance, elements);
     }
   });
   const returnVal = { watchedState }; // because of naming convention for renders !!!

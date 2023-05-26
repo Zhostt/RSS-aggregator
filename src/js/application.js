@@ -14,6 +14,7 @@ import getFeed from './getFeed.js';
 const app = (i18nextInstance) => {
   // Structure: url > feed > posts(articles)
   const state = {
+    language: 'ru',
     urlForm: {
       valid: true,
       errors: [],
@@ -47,6 +48,7 @@ const app = (i18nextInstance) => {
       exampleStatic: document.querySelector('#exampleStatic'),
       exampleDynamic: document.querySelector('#exampleDynamic'),
       submitPlaceholder: document.querySelector('#submitPlaceholder'),
+      languageSwitch: document.querySelector('#language-switch'),
     },
   };
   // make state watched by function from module view.js
@@ -156,6 +158,12 @@ const app = (i18nextInstance) => {
     }
   };
 
+  const languageChangeHandler = (e) => {
+    const clickedButton = e.target;
+    const newLanguage = e.target.id;
+    watchedState.language = newLanguage;
+  };
+
   // Starting
   // add listener with submitHandler
   elements.form.addEventListener('submit', submitHandler);
@@ -163,6 +171,8 @@ const app = (i18nextInstance) => {
   setTimeout(() => feedsChecker(watchedState), 5000);
   // listener to clicks on posts - preview
   elements.posts.addEventListener('click', previewHandler);
+  // listener for language change
+  elements.structure.languageSwitch.addEventListener('click', languageChangeHandler);
 };
 
 // to initialize instance of i18n without async/await we should envelop it
