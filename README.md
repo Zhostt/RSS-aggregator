@@ -3,7 +3,7 @@
 
 **RSS aggregator.**
 
-Watch you favourite news in real time non-stop. Is'nt that a dream?
+Watch you favourite news in real time non-stop. Isn't that a dream?
 
 
 This project has been created using **webpack-cli**, you can now run
