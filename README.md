@@ -3,6 +3,8 @@
 
 **RSS aggregator.**
 
+Link: https://rss-aggregator-zhostt.vercel.app/
+
 Watch you favourite news in real time non-stop. Isn't that a dream?
 
 
@@ -14,4 +16,4 @@ npm run build
 
 to bundle application
 
-Link to the site on Vercel: https://frontend-project-11-6oxj.vercel.app/
+
