@@ -3,7 +3,9 @@
 
 **RSS aggregator.**
 
-Watch you favourite news in real time non-stop. Is'nt that a dream?
+Link: https://rss-aggregator-zhostt.vercel.app/
+
+Watch you favourite news in real time non-stop. Isn't that a dream?
 
 
 This project has been created using **webpack-cli**, you can now run
@@ -14,4 +16,4 @@ npm run build
 
 to bundle application
 
-Link to the site on Vercel: https://frontend-project-11-6oxj.vercel.app/
+
